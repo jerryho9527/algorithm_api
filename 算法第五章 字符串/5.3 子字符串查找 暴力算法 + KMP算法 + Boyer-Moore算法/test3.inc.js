@@ -1,4 +1,4 @@
-//算法导论32章 589页 子字符串查找
+//算法导论32章 589页 KMP子字符串查找 + 算法第四版 503 B-M子字符串查找
 var bao_li_search = function(pat,txt){//暴力子字符串查找
 	var M=pat.length;
 	var N=txt.length;
@@ -17,6 +17,7 @@ var bao_li_search = function(pat,txt){//暴力子字符串查找
 	return N;
 }
 
+//------------------------------------KMP子字符串查找-------------------------------------//
 var KMP_matcher = function(t,p){
 	t=' '+t;//按照算法导论,字符串与数组皆从1开始
 	p=' '+p;
@@ -47,9 +48,7 @@ var compute_prefix = function(p){//对pat求解子前后缀,将其储存于数�
 
 //c、如果遇到下一个不相等了，那么说明不能继承前面的对称性了.如果不相同，用一句话来说，就是：从前面来找子前后缀
 	//1、如果要存在对称性，那么对称程度肯定比前面这个的对称程度小，所以要找个更小的对称，这个不用解释了吧，如果大那么就继承前面的对称性了.
-	//2、要找更小的对称，必然在对称内部还存在子对称，而且这个必须紧接着在子对称之后。
-	
-	
+	//2、要找更小的对称，必然在对称内部还存在子对称，而且这个必须紧接着在子对称之后。	
 	var m=p.length;
 	var pi=new Array(m);
 	pi[1]=0;
@@ -66,7 +65,51 @@ var compute_prefix = function(p){//对pat求解子前后缀,将其储存于数�
 	return pi;	
 }
 
-
+//-----------------------------------B-M 子字符串查找-------------------------------------//
+var Boyer_Moore_matcher = function(txt,pat){
+	var R=26;//假设字母表为26位大写字母
+	var c=pat.length;
+	//------------------------------------
+	var right=new Array(R);//使用数组right记录字母表中每个可能字符在模式pat中出现的最靠右的地方,若无出现置-1(算法第四版503页图5.3.11)
+	for(var i=0;i<right.length;i++){
+		right[i]=-1;
+	}
+	for(var j=0;j<c;j++){
+		right[pat.charCodeAt(j)-65]=j;
+	}
+	//-------------------------------------
+	
+	var M=pat.length;
+	var N=txt.length;
+	for(var i=M-1;i<=N;){
+		for(var j=M-1;j>=0;j--){
+			var txt_char=txt.charAt(i);
+			var pat_char=pat.charAt(j);
+			if(txt_char!=pat_char){//如果出现不匹配
+				if(right[txt_char.charCodeAt(0)-65]!=-1){//txt在i位不匹配的字符存在于pat中
+					if((M-1-right[txt_char.charCodeAt(0)-65])>0){//保证txt一定向右移动
+						i=i+(M-1-right[txt_char.charCodeAt(0)-65]);
+						break;
+					}else{
+						i=i+M;//若i不能向右移动,强制将i向右移动M个位置
+						break;
+					}
+				}else if(right[txt_char.charCodeAt(0)-65]==-1){//txt在i位不匹配的字符不存在于pat中
+					i=i+M;
+					break;
+				}
+			}else{//如果当前字符匹配,则对比txt与pat的前一个字符
+				i--;
+			}
+			if(j==0){//匹配完所有的字符
+				document.write('匹配于第'+(i+2)+'至'+(i+M+1)+'个字符 ');
+				i=i+M+1;//准备搜索下一个匹配字符串
+				break;
+			}
+		}
+	}
+	return;
+}
 
 
 
