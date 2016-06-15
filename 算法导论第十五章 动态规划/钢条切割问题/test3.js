@@ -5,7 +5,7 @@ function sortUp(){
 	// for(var i=1;i<=30;i++){
 		// p[i]=i;
 	// }
-	var p=[0,1,5,8,10,13,17,18,22,25,30];
+	var p=[0,1,5,8,10,13,17,18,22,25,30];//钢条价格表
 	for(n=1;n<=10;n++){
 		// var a=cut_rod_bottom_to_top(p,n);
 		var a=cut_rod_memo(p,n);

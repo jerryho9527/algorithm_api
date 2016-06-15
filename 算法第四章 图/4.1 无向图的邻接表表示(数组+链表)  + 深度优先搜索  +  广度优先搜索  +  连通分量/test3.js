@@ -4,8 +4,8 @@ function sortUp(){
 	// var graph=[[0,1],[0,2],[0,5],[0,6],[1,3],[3,5],[4,5],[4,6],[6,7],[7,8],[8,10],[9,10],[9,11],[10,12],[11,12]];//二分图样例
 	var k=new Graph();
 	k.Insert(graph);
-	// k.Show();
 	
+	// k.Show();
 	// var dfs=new DepthFirstSearch();//深度优先搜索  以0为起点
 	// dfs.DepthFirstSearch(k,0);
 	// var a=dfs.pathTo(3);//同样0-3的路径,两种搜索方式的路径是不同的
