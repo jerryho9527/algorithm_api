@@ -52,7 +52,7 @@ var EdgeWeightedGraph = function(){//加权无向图
 		}
 		this.E++;
 	}
-	
+
 	this.Insert = function(a){//按照输入的图数组,设置图顶点的数值V以及添加边到邻接表中
 		for(var i=0;i<a.length;i++){
 			this.addEdge(a[i][0],a[i][1],a[i][2]);
@@ -142,7 +142,7 @@ var LazyPrimMST = function(){
 }
 
 
-//最小生成树Prim算法的即时实现(指的是优先队列中会保留失效的边,只是当检测到边的两端都已遍历,会跳过该边)
+//最小生成树Prim算法的即时实现(指的是优先队列中不会保留失效的边,只是当检测到边的两端都已遍历,会跳过该边)
 var PrimMST = function(){
 
 	this.marked=new Array();
@@ -210,5 +210,47 @@ var PrimMST = function(){
 	}
 }
 
+//最小生成树的Kruskal算法,与Prim算法的区别是,Prim算法从起始点开始通过加入邻接边权重最小的边来构建最小生成树,因此最小生成树是一条一条边生长的;;而Kruskal算法是将图中所有边权重进行排序,通过选择其中权重最小而不会与已选中的边构成环的边进行最小生成树的构建,因此最小生成树是从破碎的边开始慢慢结合而成
+var KruskalMST = function () {
+	this.marked=new Array();
+	this.mst=new Array();
+	this.pq_k=new IndexMinPQ();
+	this.uf=new UF();
+
+	this.KruskalMST = function(G) {
+		this.uf.UF(G.get_V());
+		this.marked=new Array(G.get_V());
+		for(var i=0;i<G.get_V();i++){
+			this.marked[i]=false;
+		}
+
+		for(var i=0;i<G.adj.length;i++){//将图中所有的边都放入最小优先队列pq_k内
+			if(G.adj[i]!=null) {
+				this.marked[i]=true;
+				var arr = G.get_adj_to_array(i);
+				for (var j = 0; j < arr.length; j++) {
+					if ((!this.marked[arr[j].v])||(!this.marked[arr[j].w])) {
+						this.pq_k.Insert(arr[j],arr[j].weight);
+					}
+				}
+			}
+		}
+
+		while(!this.pq_k.isEmpty()){
+			var e=this.pq_k.delMin();
+			var v=e.either();
+			var w=e.other(v);
+			if(this.uf.connected(v,w)){
+				continue;
+			}
+			this.uf.union(v,w);
+			this.mst.push(e);
+		}
+	}
+
+	this.edges = function () {//返回最小生成树所包含的边
+		return this.mst;
+	}
+}
 
 
